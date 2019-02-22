@@ -7,8 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "sudo ./node_modules/pm2/bin/pm2 start server.js",
     "stop": "sudo ./node_modules/pm2/bin/pm2 stop server.js",
-    "pm2-list": "sudo ./node_modules/pm2/bin/pm2 list",
-    "restart": "npm stop; npm restart"
+    "pm2-list": "sudo ./node_modules/pm2/bin/pm2 list"
   },
   "author": "",
   "license": "ISC",
