@@ -10,11 +10,14 @@ const red = new Gpio(3, {mode: Gpio.OUTPUT})
 const green = new Gpio(2, {mode: Gpio.OUTPUT})
 const blue = new Gpio(4, {mode: Gpio.OUTPUT})
 
+let blocked = false
+
 /**********
 * Primary LED RGB control
 **********/
 
 app.post('/red', function(req, res){
+	if (blocked) res.send(409, {error: 'blocked by another resource'})
 	stats.red = req.body.brightness
 	red.pwmWrite(req.body.brightness)
 	res.status(200)
@@ -22,7 +25,7 @@ app.post('/red', function(req, res){
 })
 
 app.post('/green', function(req, res){
-	console.log(req.body)
+	if (blocked) res.send(409, {error: 'blocked by another resource'})
 	stats.green = (req.body.brightness)
 	green.pwmWrite(req.body.brightness)
 	res.status(200)
@@ -31,6 +34,7 @@ app.post('/green', function(req, res){
 
 
 app.post('/blue', function(req, res){
+	if (blocked) res.send(409, {error: 'blocked by another resource'})
 	stats.blue = req.body.brightness
 	blue.pwmWrite(req.body.brightness)
 	res.status(200)
@@ -39,7 +43,7 @@ app.post('/blue', function(req, res){
 
 // combined endpoint for red green and blue
 app.post('/rgb', function(req, res){
-	console.log(req.body)
+	if (blocked) res.send(409, {error: 'blocked by another resource'})
 	if(req.body.red != undefined){
 		stats.red = req.body.red
 		red.pwmWrite(req.body.red)
@@ -73,6 +77,19 @@ app.get('/auth_code', (req, res) => {
 	res.send(500, {error: 'auth_code already sent, try requesting another?'})
 })
 
+app.get('/blocked', (req, res) => {
+	res.send({blocked: blocked})
+})
+
+app.post('/blocked', (req, res) => {
+	blocked = !blocked
+	res.status(200).send()
+})
+
+app.get('/', (req, res) => {
+	res.render('frontend.html')
+})
+
 /**********
 * Start HTTP server
 **********/
@@ -82,6 +99,7 @@ app.listen(port,
 		red.pwmWrite(255)
 		blue.pwmWrite(255)
 		green.pwmWrite(255)	
+		blocked = false
 		console.log(`now listening on port ${port}`)
 	})
 

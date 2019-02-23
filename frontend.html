@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>led light control</title>
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro/dist/iro.min.js"></script>
+
+    <style type="text/css">
+        * {
+            transition: 0.25s;
+            font-family: sans-serif;
+            background: black;
+            color: white
+        }
+
+        #main {
+            max-width: 800px;
+            padding-top: 2rem;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .colorPicker {
+            display: flex;
+            justify-content: space-around
+        }
+
+        #blocked,
+        button {
+            padding: 1rem 2rem 1rem 2rem;
+            margin: 1rem;
+            text-align: center;
+            background: blue;
+            border-radius: 8px;
+            cursor: pointer
+        }
+
+        span {
+            background: inherit;
+            text-transform: uppercase
+        }
+
+        #blocked[disabled],
+        #send[disabled] {
+            background: grey;
+            color: rgba(255, 255, 255, 0.8)
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div class="colorPicker"></div>
+        <div style="display: flex; flex-direction: row; justify-content: stretch; max-width: 400px">
+            <button id="blocked" onclick="toggleBlocked()">
+                blocked: <span id="actual">no</span>
+            </button>
+            <button onclick="sendColor()" id="send">
+                send
+            </button>
+        </div>
+    </div>
+    <script>
+        let blockedTracker = undefined
+        fetch('/stats').then(d=>d.json()).then(colors => initColorPicker(colors))
+        let outerColor = {}
+        fetch('/blocked').then(d=>d.json()).then(colors => setBlocked(colors.blocked))
+        function toggleBlocked(){
+            document.querySelector('#blocked').setAttribute('disabled', true)
+            fetch('/blocked', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            }).then(e => {
+                document.querySelector('#blocked').setAttribute('disabled', false)
+                setBlocked(!blockedTracker)
+            }
+            ).catch(e => document.querySelector('#blocked').setAttribute('disabled', false)
+            )
+        }
+        function setBlocked(b){
+            blockedTracker = b
+            document.querySelector('#actual').innerHTML = b? 'yes':'no'
+        }
+        function initColorPicker(colors) {
+            var colorPicker = new iro.ColorPicker(".colorPicker", {
+                color: `rgb(${colors.red}, ${colors.green}, ${colors.blue})`,
+                borderWidth: 1,
+                borderColor: "#fff",
+            });
+
+            colorPicker.on("color:change", function (color) {
+                [outerColor.red, outerColor.green, outerColor.blue] = [color.rgb.r, color.rgb.g, color.rgb.b]
+            });
+        }
+        function sendColor() {
+            document.querySelector('#send').setAttribute('disabled', true)
+            fetch('/rgb', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(outerColor)
+            }).then(e => document.querySelector('#send').setAttribute('disabled', false)
+            ).catch(e => document.querySelector('#send').setAttribute('disabled', false)
+            )
+        }
+    </script>
+</body>
+
+</html>
