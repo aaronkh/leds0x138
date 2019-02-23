@@ -67,10 +67,10 @@
     </div>
     <script>
         let blockedTracker = undefined
-        fetch('/stats').then(d=>d.json()).then(colors => initColorPicker(colors))
+        fetch('/stats').then(d => d.json()).then(colors => initColorPicker(colors))
         let outerColor = {}
-        fetch('/blocked').then(d=>d.json()).then(colors => setBlocked(colors.blocked))
-        function toggleBlocked(){
+        fetch('/blocked').then(d => d.json()).then(colors => setBlocked(colors.blocked))
+        function toggleBlocked() {
             document.querySelector('#blocked').setAttribute('disabled', true)
             fetch('/blocked', {
                 method: 'POST',
@@ -79,15 +79,15 @@
                     'Content-Type': 'application/json'
                 },
             }).then(e => {
-                document.querySelector('#blocked').setAttribute('disabled', false)
                 setBlocked(!blockedTracker)
+                document.querySelector('#blocked').setAttribute('disabled', false)
             }
             ).catch(e => document.querySelector('#blocked').setAttribute('disabled', false)
             )
         }
-        function setBlocked(b){
+        function setBlocked(b) {
             blockedTracker = b
-            document.querySelector('#actual').innerHTML = b? 'yes':'no'
+            document.querySelector('#actual').innerHTML = b ? 'yes' : 'no'
         }
         function initColorPicker(colors) {
             var colorPicker = new iro.ColorPicker(".colorPicker", {
@@ -109,9 +109,15 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(outerColor)
-            }).then(e => document.querySelector('#send').setAttribute('disabled', false)
-            ).catch(e => document.querySelector('#send').setAttribute('disabled', false)
-            )
+            }).then(e => {
+                document.querySelector('#send').setAttribute('disabled', false)
+                console.log('why')
+            }
+            ).catch(e => {
+                document.querySelector('#send').setAttribute('disabled', false)
+                console.log('catched')
+            }
+        )
         }
     </script>
 </body>
