@@ -80,9 +80,9 @@
                 },
             }).then(e => {
                 setBlocked(!blockedTracker)
-                document.querySelector('#blocked').setAttribute('disabled', false)
+                document.querySelector('#blocked').removeAttribute('disabled')
             }
-            ).catch(e => document.querySelector('#blocked').setAttribute('disabled', false)
+            ).catch(e => document.querySelector('#blocked').removeAttribute('disabled')
             )
         }
         function setBlocked(b) {
@@ -110,11 +110,11 @@
                 },
                 body: JSON.stringify(outerColor)
             }).then(e => {
-                document.querySelector('#send').setAttribute('disabled', false)
+                document.querySelector('#send').removeAttribute('disabled')
                 console.log('why')
             }
             ).catch(e => {
-                document.querySelector('#send').setAttribute('disabled', false)
+                document.querySelector('#send').removeAttribute('disabled')
                 console.log('catched')
             }
         )
