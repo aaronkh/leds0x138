@@ -17,7 +17,7 @@ let blocked = false
 **********/
 
 app.post('/red', function(req, res){
-	if (blocked) res.send(409, {error: 'blocked by another resource'})
+	if (blocked) return res.send(409, {error: 'blocked by another resource'})
 	stats.red = req.body.brightness
 	red.pwmWrite(req.body.brightness)
 	res.status(200)
@@ -25,7 +25,7 @@ app.post('/red', function(req, res){
 })
 
 app.post('/green', function(req, res){
-	if (blocked) res.send(409, {error: 'blocked by another resource'})
+	if (blocked) return res.send(409, {error: 'blocked by another resource'})
 	stats.green = (req.body.brightness)
 	green.pwmWrite(req.body.brightness)
 	res.status(200)
@@ -34,7 +34,7 @@ app.post('/green', function(req, res){
 
 
 app.post('/blue', function(req, res){
-	if (blocked) res.send(409, {error: 'blocked by another resource'})
+	if (blocked) return res.send(409, {error: 'blocked by another resource'})
 	stats.blue = req.body.brightness
 	blue.pwmWrite(req.body.brightness)
 	res.status(200)
@@ -43,7 +43,7 @@ app.post('/blue', function(req, res){
 
 // combined endpoint for red green and blue
 app.post('/rgb', function(req, res){
-	if (blocked) res.send(409, {error: 'blocked by another resource'})
+	if (blocked) return res.send(409, {error: 'blocked by another resource'})
 	if(req.body.red != undefined){
 		stats.red = req.body.red
 		red.pwmWrite(req.body.red)
