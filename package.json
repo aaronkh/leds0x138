@@ -5,15 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "sudo ./node_modules/pm2/bin/pm2 start server.js",
-    "stop": "sudo ./node_modules/pm2/bin/pm2 stop server.js",
-    "pm2-list": "sudo ./node_modules/pm2/bin/pm2 list"
+    "start": "sudo npx start start server.js",
+    "stop": "sudo npx pm2 stop server.js",
+    "pm2-list": "sudo npx pm2 list"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
-    "pigpio": "^1.2.1",
-    "pm2": "^3.3.1"
+    "pigpio": "^1.2.1"
   }
 }
